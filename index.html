@@ -8,7 +8,7 @@
 </head>
 
     <script type="text/javascript">
-        var QueryString = function () {
+		var QueryString = function () {
               // This function is anonymous, is executed immediately and 
               // the return value is assigned to QueryString!
               var query_string = {};
@@ -35,12 +35,56 @@
     <body>
         <div id="chart"></div>
         <script>
-
-        var inputJson = JSON.parse(QueryString.data);
+		var inputJson = JSON.parse(QueryString.data);
+		var minTime = inputJson.minTime;
+		var times = inputJson.data.columns[0];
+		var i = 1;
+		function pad2(obj) {
+			var s = obj.toString();
+			if (s.length >= 2)
+				return s;
+			return '0' + s;
+		}
+		while (i < times.length) {
+			var d = new Date((times[i] + minTime) * 1000);
+			times[i] = d;
+			i += 1;
+		}
 	var chartJson = {
             bindto: '#chart',
+			axis: {
+				x: {
+				type: 'timeseries',
+				label: {
+					text: 'Time',
+					position: 'outer-center'
+					// inner-right : default
+					// inner-center
+					// inner-left
+					// outer-right
+					// outer-center
+					// outer-left
+				},
+				tick: {
+					format: '%m-%d %H:%M'
+				}
+        },
+        y: {
+            label: {
+                text: 'Wind speed (mps)',
+                position: 'outer-middle'
+                // inner-top : default
+                // inner-middle
+                // inner-bottom
+                // outer-top
+                // outer-middle
+                // outer-bottom
+            }
+        },
+			}
         }
         chartJson['data'] = inputJson.data;
+		console.log(chartJson);
         var chart = c3.generate(chartJson);
         </script>
     </body>
